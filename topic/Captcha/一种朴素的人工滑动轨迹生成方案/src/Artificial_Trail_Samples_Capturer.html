@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artificial Trail Samples Capturer</title>
+    <style>
+        body {
+            background-color: rgb(150, 150, 150);
+            height: 100%;
+        }
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+        .container {
+            margin: 0 auto;
+            width:  61.8%;
+            height: auto;
+            background-color: rgb(250, 250, 250);
+            /* border: 1px solid #000; */
+        }
+        .trail_div {
+            margin: 20px;
+        }
+        #trail_canvas {
+            width: 100%;
+            height: 300px;
+        }
+        .mouse_trail div{
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="trail_div">
+            <hr>
+            <h1>Artificial Trail Samples Capturer | 人工轨迹样本采集器</h1>
+            <hr>
+            <div class="canvas_div" oncontextmenu="return false;">
+                <canvas id="trail_canvas"></canvas>
+            </div>
+            <hr>
+            <div class="op_div">
+                <div>
+                    <h2>操作说明</h2>
+                    <ol>
+                        <li>设置目标偏移量</li>
+                        <li>点击左键开始捕获</li>
+                        <li>点击右键结束捕获</li>
+                    </ol>
+                </div><hr>
+                <div class="set_div">
+                    目标偏移量: <input id="target_offset" type="text" value="500"><button onclick="trail_canvas.flagline()" style="background-color:dodgerblue;">set</button>
+                </div><hr>
+                <div class="mouse_postion">
+                    <div>
+                        <span>当前坐标: </span>
+                        <span>x: <input id="mp_x" type="text" readonly="readonly"></span>
+                        <span>y: <input id="mp_y" type="text" readonly="readonly"></span>
+                    </div>
+                    <div>
+                        <span>相对坐标: </span>
+                        <span>x: <input id="mp2_x" type="text" readonly="readonly"></span>
+                        <span>y: <input id="mp2_y" type="text" readonly="readonly"></span>
+                    </div>
+                </div><hr>
+                <div>
+                    <span>捕获状态: <span id="trail_status" style="color:rgb(125, 125, 125);">未捕获</span></span>
+                </div><hr>
+                <div class="mouse_trail">
+                    <div>
+                        <span>Trail: (<span id="trail_len">0</span>)</span>
+                        <!-- <span><button onclick="trail_samples_monitor.get();" style="background-color: #4CAF50;">GET</button></span> -->
+                        <span><button onclick="trail_samples_monitor.disp();" style="background-color: #008CBA;">DISP</button></span>
+                        <span><button onclick="trail_samples_monitor.clean();" style="background-color: #f44336;">CLR</button></span>
+                    </div>
+                    <div>
+                        <textarea id="trail_data" cols="100" rows="10"></textarea>
+                    </div>
+                </div><hr>
+                <div>
+                    <h2>轨迹样本: <button onclick="export_trail_samples();" style="background-color: #4CAF50;">export</button></h2>
+                    <hr>
+                    <ul id="trail_samples_li"></ul>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /*********************************************  
+         * Name: 人工轨迹样本捕获器
+         * Date: 2021-09-16
+         * Author: Ais
+         * Desc: 捕获人工轨迹
+        *********************************************/
+
+        /*-------------------- Canvas对象 --------------------*/
+        const trail_canvas = {
+
+            //起始标记线偏移
+            start: 200,
+            //目标偏移量
+            offset: 500,
+            //终止标记线偏移
+            end: 0,
+
+            //初始化
+            init: function() {
+                //获取 Canvas 标签
+                this.canvas = document.getElementById("trail_canvas");
+                //设置画布尺寸
+                this.width = this.canvas.width = this.canvas.offsetWidth;
+                this.height = this.canvas.height = this.canvas.offsetHeight;
+                //获取可绘制对象
+                this.ctx = this.canvas.getContext("2d");
+                //绘制标记线
+                this.end = this.start + this.offset;
+                this.refresh();
+                this.flagline();
+            },
+
+            //刷新画布
+            refresh: function() {
+                this.ctx.fillStyle = `rgb(${50},${50},${50})`;
+                this.ctx.fillRect(0, 0, this.width, this.height);
+            },
+
+            //设置标记线
+            flagline: function() {
+                //获取目标轨迹偏移量
+                this.offset = parseInt(document.getElementById("target_offset").value)
+                this.end = this.start + this.offset;
+                this.refresh();
+                //线条样式
+                this.ctx.lineCap = "round";  
+                this.ctx.lineWidth = 2;
+                //绘制起始标记线
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.start, 0);
+                this.ctx.lineTo(this.start, this.height); 
+                this.ctx.strokeStyle = `rgb(${0}, ${255}, ${100})`; 
+                this.ctx.stroke(); 
+                //绘制终止标记线
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.end, 0);
+                this.ctx.lineTo(this.end, this.height); 
+                this.ctx.strokeStyle = `rgb(${255}, ${50}, ${0})`; 
+                this.ctx.stroke(); 
+                //绘制水平标记线
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.height/2);
+                this.ctx.lineTo(this.width, this.height/2); 
+                this.ctx.strokeStyle = `rgb(${100}, ${100}, ${100})`; 
+                this.ctx.stroke(); 
+            },
+
+            //显示坐标点
+            point(x, y, r=1, color=`rgb(${255}, ${255}, ${255})`){
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, r, 0, 2*Math.PI);
+                this.ctx.strokeStyle = color; 
+                this.ctx.stroke(); 
+            },
+
+            //显示轨迹样本
+            disp_ts: function(ts) {
+                //绘制标记线
+                this.flagline();
+                //绘制轨迹点
+                let sx = this.start, sy = parseInt(this.height/2);
+                for(let i=0; i<ts.length; i++){
+                    this.point(sx+ts[i][0], sy+ts[i][1]);
+                }
+            }
+
+        }
+        //初始化
+        trail_canvas.init();
+
+        
+        /*-------------------- 轨迹捕获器 --------------------*/
+        const trail_capturer = {
+            
+            //轨迹捕获状态[0(未捕获)|1(捕获中)|2(结束)]
+            status: 0,
+            //轨迹样本集 {"offset": 0, "tn": 0, "trail": []}
+            samples: [],
+            //当前轨迹
+            trail: [],
+            //当前轨迹起始状态
+            start: {"x": 0, "y": 0, "t": 0},
+
+            //初始化当前轨迹
+            init: function(start) {
+                this.status = 1;
+                this.start = start;
+                // this.trail = [[0, 0, 0]];
+                this.trail = [];
+            },
+
+            //添加当前轨迹
+            add: function(x, y, t) {
+                this.trail.push([
+                    x - this.start.x,
+                    y - this.start.y,
+                    t - this.start.t,
+                ])
+            },
+
+            //保存当前轨迹
+            save: function() {
+                this.status = 2;
+                this.samples.push(this.trail);
+            },
+
+            //删除指定序号轨迹样本
+            remove: function(i) {
+                this.samples.splice(i, 1);
+            }
+        }
+
+
+        /*-------------------- 轨迹样本显示器 --------------------*/
+        const trail_samples_monitor = {
+
+            //生成轨迹样本摘要列表
+            intro: function() {
+                trail_samples_el = document.getElementById("trail_samples_li");
+                trail_samples_el.innerHTML = "";
+                trail_html = ''
+                for(let i=0; i<trail_capturer.samples.length; i++) {
+                    let ts = trail_capturer.samples[i];
+                    let tn = ts.length;
+                    let offset = ts[tn-1][0] - ts[0][0];
+                    //操作按钮
+                    let op = `<button class="ts_get_button" onclick="trail_samples_monitor.get(${i});trail_samples_monitor.disp();" style="background-color: #4CAF50;">GET</button>`
+                    op += "||" + `<button class="ts_del_button" onclick="trail_samples_monitor.remove(${i});" style="background-color: #f44336;">DEL</button>`
+                    //轨迹摘要
+                    trail_html += `<li><span style="background-color: gold;">[${i}]</span> [${op}] -> offset(${offset}) : tn(${tn})</li>`
+                }
+                trail_samples_el.innerHTML = trail_html;
+            },
+
+            //显示指定轨迹样本数据
+            get: function (i=null) {
+                let trail = (i==null ? trail_capturer.trail : trail_capturer.samples[i]);
+                document.getElementById("trail_len").innerText = trail.length;
+                document.getElementById("trail_data").innerText = JSON.stringify(trail);
+            },
+
+            //绘制轨迹
+            disp: function() {
+                //获取轨迹数据
+                let trail = JSON.parse(document.getElementById("trail_data").value);
+                //显示轨迹长度
+                document.getElementById("trail_len").innerText = trail.length;
+                //绘制轨迹
+                trail_canvas.disp_ts(trail);
+            },
+
+            //清空轨迹显示区
+            clean: function() {
+                document.getElementById("trail_len").innerText = 0;
+                document.getElementById("trail_data").innerText = "";
+            },
+
+            //删除轨迹样本
+            remove: function(i) {
+                trail_capturer.remove(i);
+                this.intro();
+            }
+
+        }
+
+
+        /*-------------------- 捕获轨迹 --------------------*/
+        //更新轨迹捕获状态
+        trail_canvas.canvas.addEventListener("mousedown", function(e){
+            //点击左键(开始捕获)
+            if((trail_capturer.status == 0 || trail_capturer.status == 2) && e.button == 0) {
+                //设置轨迹标记线
+                trail_canvas.flagline();
+                //更新页面轨迹状态
+                let trail_status_el = document.getElementById("trail_status");
+                trail_status_el.style = `color:rgb(${0}, ${200}, ${0})`;
+                trail_status_el.innerText = "捕获中";                          
+                //初始化当前轨迹
+                trail_capturer.init({"x": trail_canvas.start, "y": e.offsetY, "t":(new Date()).getTime()});
+            } 
+            //点击右键(停止捕获)
+            if(trail_capturer.status == 1 && e.button == 2) {
+                //更新页面轨迹状态
+                let trail_status_el = document.getElementById("trail_status");
+                trail_status_el.style = `color:rgb(${200}, ${0}, ${0})`;
+                trail_status_el.innerText = "结束";
+                //保存当前轨迹
+                trail_capturer.save();
+                //显示轨迹数据
+                trail_samples_monitor.get();
+                //显示轨迹样本摘要列表
+                trail_samples_monitor.intro();
+            } 
+            //点击中键(重置状态)
+            if(e.button == 1){
+                //更新页面轨迹状态
+                let trail_status_el = document.getElementById("trail_status");
+                trail_status_el.style = `color:rgb(${125}, ${125}, ${125})`;
+                trail_status_el.innerText = "未捕获";
+                //重置捕获状态
+                trail_capturer.status = 0;
+                trail_canvas.flagline();
+            }
+        });
+
+        //捕获鼠标轨迹
+        trail_canvas.canvas.addEventListener("mousemove", function(e) {
+            let x = e.offsetX, y = e.offsetY;
+            //是否在捕获状态
+            if(trail_capturer.status == 1){
+                //添加轨迹点
+                trail_capturer.add(x, y, (new Date()).getTime());
+                //显示轨迹点
+                trail_canvas.point(x, y);
+            }
+            //显示鼠标坐标
+            document.getElementById("mp_x").value = x;
+            document.getElementById("mp_y").value = y;
+            document.getElementById("mp2_x").value = x - trail_canvas.start;
+            document.getElementById("mp2_y").value = -(y - (trail_canvas.height/2));
+        });
+
+
+        /*-------------------- 导出轨迹样本数据 --------------------*/
+        const export_trail_samples = function(){
+            var file_a_el = document.createElement('a');
+            var url = window.URL.createObjectURL(new Blob([JSON.stringify(trail_capturer.samples)]));
+            file_a_el.href = url;
+            file_a_el.download = "source_trail_samples.json";
+            file_a_el.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+    </script>
+</body>
+</html>

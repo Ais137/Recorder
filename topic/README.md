@@ -2,9 +2,10 @@
 
 --------------------------------------------------
 ## Index · 索引
-* **[Extractor](./Extractor/)** : 结构化数据提取问题研究。
-* **[Pythonic](./Pythonic/)** : *Python* 基础语法及其应用场景研究。
-* **[Scrapy](./Scrapy/)** : *Scrapy* 框架的应用场景及相关源码实现研究。
+* **[Captcha](./Captcha/README.md)** : 验证码识别与绕过相关的技术。
+* **[Extractor](./Extractor/README.md)** : 结构化数据提取问题研究。
+* **[Pythonic](./Pythonic/README.md)** : *Python* 基础语法及其应用场景研究。
+* **[Scrapy](./Scrapy/README.md)** : *Scrapy* 框架的应用场景及相关源码实现研究。
 
 --------------------------------------------------
 ## Specification · 文档规范
