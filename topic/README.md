@@ -3,6 +3,7 @@
 --------------------------------------------------
 ## Index · 索引
 * **[Captcha](./Captcha/README.md)** : 验证码识别与绕过相关的技术。
+* **[Collector](./Collector/README.md)** : 数据采集相关的问题与应用场景
 * **[Extractor](./Extractor/README.md)** : 结构化数据提取问题研究。
 * **[Pythonic](./Pythonic/README.md)** : *Python* 基础语法及其应用场景研究。
 * **[Scrapy](./Scrapy/README.md)** : *Scrapy* 框架的应用场景及相关源码实现研究。

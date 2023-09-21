@@ -22,6 +22,7 @@
 * [Scrapy-请求去重机制分析](./topic/Scrapy/Scrapy-请求去重机制分析/Scrapy-请求去重机制分析.md)
 * [一种基于路径表达式的json数据提取器](./topic/Extractor/一种基于路径表达式的json数据提取器/一种基于路径表达式的json数据提取器.md)
 * [一种朴素的人工滑动轨迹生成方案](./topic/Captcha/一种朴素的人工滑动轨迹生成方案/一种朴素的人工滑动轨迹生成方案.md)
+* [基于requests库的组件化扩展方案](./topic/Collector/基于requests库的组件化扩展方案/基于requests库的组件化扩展方案.md)
 
 --------------------------------------------------
 ## Specification · 文档规范
