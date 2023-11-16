@@ -14,6 +14,7 @@
 * [Scrapy-命令行模块架构分析](./Scrapy-命令行模块架构分析/Scrapy-命令行模块架构分析.md)
 * [Scrapy-配置化机制分析](./Scrapy-配置化机制分析/README.md)
 * [Scrapy-请求去重机制分析](./Scrapy-请求去重机制分析/Scrapy-请求去重机制分析.md)
+* [Scrapy-运行状态监控组件的实现原理分析](./Scrapy-运行状态监控组件的实现原理分析/Scrapy-运行状态监控组件的实现原理分析.md)
 
 
 -------------------------------------------------------
@@ -25,6 +26,7 @@
 * scrapy.signals 信号机制
 * pipeline(数据管道)的生命周期
 * middlewares(中间件)的生命周期
+* AttributeError: 'Crawler' object has no attribute 'spider' 异常原因分析
 
 
 -------------------------------------------------------

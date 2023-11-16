@@ -18,6 +18,7 @@
 -------------------------------------------------------
 ## 框架配置参数解析
 
+-------------------------------------------------------
 ### COMMANDS_MODULE
 * 功能：用于加载自定义的命令行模块，框架会扫描该参数下的模块目录，查找 *scrapy.commands.ScrapyCommand* 子类。
 * 样例：`COMMANDS_MODULE = 'demo.tools'`
@@ -34,6 +35,7 @@ def _get_commands_dict(settings, inproject):
     return cmds
 ```
 
+-------------------------------------------------------
 ### DUPEFILTER_CLASS
 * 功能：指定框架加载的请求去重器对象，用于自定义请求去重逻辑。
 * 样例：`DUPEFILTER_CLASS = 'scrapy.dupefilters.RFPDupeFilter'`
@@ -52,6 +54,7 @@ class Scheduler:
         ...
 ```
 
+-------------------------------------------------------
 ### JOBDIR
 * 功能：指定框架持久化机制的数据缓存目录。
 * 样例：`JOBDIR = "./temp"`
@@ -65,6 +68,7 @@ def job_dir(settings):
     return path
 ```
 
+-------------------------------------------------------
 ### TEMPLATES_DIR
 * 功能：通过指定该参数来加载自定义代码模板，用于命令行模块中的 *startproject* 和 *genspider* 命令。
 * 样例： `TEMPLATES_DIR = abspath(join(dirname(__file__), '..','templates'))`
@@ -81,3 +85,44 @@ class Command(ScrapyCommand):
         )
 ``` 
 
+-------------------------------------------------------
+### LOGSTATS_INTERVAL
+* 功能：**scrapy.extensions.logstats** 扩展组件在日志中打印状态统计数据的时间间隔。
+* 样例：`LOGSTATS_INTERVAL = 60.0`
+* 源码：**scrapy.extensions.logstats.LogStats.from_crawler**
+```py
+class LogStats:
+    """Log basic scraping stats periodically"""
+    ...
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        interval = crawler.settings.getfloat('LOGSTATS_INTERVAL')
+        if not interval:
+            raise NotConfigured
+        o = cls(crawler.stats, interval)
+        crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
+        crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
+        return o
+
+    def spider_opened(self, spider):
+        self.pagesprev = 0
+        self.itemsprev = 0
+
+        self.task = task.LoopingCall(self.log, spider)
+        self.task.start(self.interval)
+```
+
+-------------------------------------------------------
+### STATS_CLASS
+* 功能：**scrapy.crawler.Crawler** 的 **self.stats** 属性所使用的类，用于存储运行状态统计数据，并通过 **scrapy.extensions** 中的扩展组件来进行记录和同步。
+* 样例：`STATS_CLASS = 'scrapy.statscollectors.MemoryStatsCollector' `
+* 源码：**scrapy.crawler.Crawler**
+```py
+class Crawler:
+
+    def __init__(self, spidercls, settings=None):
+        ...
+        self.stats = load_object(self.settings['STATS_CLASS'])(self)
+        ...
+```
