@@ -26,6 +26,7 @@
 * [基于JavaScript和Canvas绘制曼德勃罗特集](./topic/Vision/基于JavaScript和Canvas绘制曼德勃罗特集/基于JavaScript和Canvas绘制曼德勃罗特集.md)
 * [模块化URL提取器的设计与实现](./topic/Extractor/模块化URL提取器的设计与实现/模块化URL提取器的设计与实现.md)
 * [Supervisor-持久化进程部署方案](./topic/Deploy/Supervisor-持久化进程部署方案/Supervisor-持久化进程部署方案.md)
+* [JavaScript项目的文档自动化集成与发布方案](./topic/Solution/JavaScript项目的文档自动化集成与发布方案/JavaScript项目的文档自动化集成与发布方案.md)
 
 --------------------------------------------------
 ## Specification · 文档规范

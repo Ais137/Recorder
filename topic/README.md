@@ -9,6 +9,7 @@
 * **[HotSpot](./HotSpot/README.md)** : *HotSpot* 项目的技术栈研究和原型方案验证。
 * **[Pythonic](./Pythonic/README.md)** : *Python* 基础语法及其应用场景研究。
 * **[Scrapy](./Scrapy/README.md)** : *Scrapy* 框架的应用场景及相关源码实现研究。
+* **[Solution](./Solution/README.md)** : 解决方案集合。
 * **[Vision](./Vision/README.md)** : *Vision* 项目的的设计与实现。
 
 --------------------------------------------------
