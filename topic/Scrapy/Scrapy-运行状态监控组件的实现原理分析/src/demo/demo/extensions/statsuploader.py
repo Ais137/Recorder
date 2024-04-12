@@ -85,13 +85,13 @@ class StatsUploader(object):
 
     def spider_opened(self, spider):
         if self.upload_mode == "UPLOAD_INTERVAL":
-            self.upload_task = task.LoopingCall(self.upload_stats, spider)
-            self.upload_task.start(self.upload_interval)
+            self._upload_task = task.LoopingCall(self.upload_stats, spider)
+            self._upload_task.start(self.upload_interval)
         hasattr(self.connector, "connect") and self.connector.connect()
 
     def spider_closed(self, spider, reason):
-        if self.upload_task and self.upload_task.running:
-            self.upload_task.stop()
+        if self._upload_task and self._upload_task.running:
+            self._upload_task.stop()
         self.upload_stats(spider)
         hasattr(self.connector, "close") and self.connector.close()
 
