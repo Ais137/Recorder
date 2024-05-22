@@ -1,0 +1,15 @@
+{
+    "node": "E39245A2-3097-DD83-5267-7C2DCC8FC5D6",
+    "name": "Scrapy-配置化机制分析-配置容器结构分析",
+    "author": "Ais",
+    "date": "2023-08-30",
+    "topic": [
+        "Scrapy"
+    ],
+    "tag": [
+        "数据采集",
+        "scrapy",
+        "配置化机制",
+        "Settings"
+    ]
+}

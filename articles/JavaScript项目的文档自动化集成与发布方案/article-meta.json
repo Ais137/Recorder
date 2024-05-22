@@ -1,0 +1,17 @@
+{
+    "node": "4A84C848-7B44-1B85-E1E4-961278073392",
+    "name": "JavaScript项目的文档自动化集成与发布方案",
+    "author": "Ais",
+    "date": "2024-04-09",
+    "topic": [
+        "Solution"
+    ],
+    "tag": [
+        "Solution",
+        "JavaScript",
+        "jsdoc",
+        "Github Actions",
+        "Github Pages",
+        "CI/CD"
+    ]
+}

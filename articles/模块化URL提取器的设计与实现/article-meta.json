@@ -1,0 +1,16 @@
+{
+    "node": "9CBE6BDB-0829-E22E-4C66-6B831A81EAC7",
+    "name": "模块化URL提取器的设计与实现",
+    "author": "Ais",
+    "date": "2023-10-12",
+    "topic": [
+        "Extractor"
+    ],
+    "tag": [
+        "UrlExtractor",
+        "数据提取",
+        "URL",
+        "python",
+        "模块化架构"
+    ]
+}

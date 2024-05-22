@@ -1,0 +1,17 @@
+{
+    "node": "8E3D465E-9770-4FEC-932A-FEC2EA97EC3A",
+    "name": "Scrapy-配置化机制分析-对象加载机制研究",
+    "author": "Ais",
+    "date": "2023-09-07",
+    "topic": [
+        "Scrapy"
+    ],
+    "tag": [
+        "数据采集",
+        "scrapy",
+        "配置化机制",
+        "Settings",
+        "importlib",
+        "动态加载"
+    ]
+}

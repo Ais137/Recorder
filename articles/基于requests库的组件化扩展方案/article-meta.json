@@ -1,0 +1,16 @@
+{
+    "node": "F40298BA-7E28-D52F-DEED-CFE8DD6428C8",
+    "name": "基于requests库的组件化扩展方案",
+    "author": "Ais",
+    "date": "2023-09-21",
+    "topic": [
+        "Solution"
+    ],
+    "tag": [
+        "collector",
+        "requests",
+        "钩子系统",
+        "hook",
+        "RequestsExtender"
+    ]
+}

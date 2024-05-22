@@ -1,0 +1,16 @@
+{
+    "node": "C87A47CE-6FF1-9E0A-A924-6A8E43441B8F",
+    "name": "Scrapy-请求去重机制分析",
+    "author": "Ais",
+    "date": "2023-08-21",
+    "topic": [
+        "Scrapy"
+    ],
+    "tag": [
+        "数据采集",
+        "scrapy",
+        "去重",
+        "dupefilter",
+        "源码分析"
+    ]
+}

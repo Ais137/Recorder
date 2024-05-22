@@ -1,0 +1,16 @@
+{
+    "node": "4ED2456C-38E7-D170-EF32-9B6508182537",
+    "name": "基于JavaScript和Canvas绘制曼德勃罗特集",
+    "author": "Ais",
+    "date": "2023-09-22",
+    "topic": [
+        "Vision"
+    ],
+    "tag": [
+        "Vision",
+        "Javascript",
+        "Math",
+        "曼德勃罗特集",
+        "MandelbrotSet"
+    ]
+}

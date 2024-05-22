@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MandelbrotSet </title>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            /* 隐藏鼠标 */
+            /* cursor: none; */
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+
+    <!-- canvas标签 -->
+    <div class="canvas_div">
+        <canvas id="vision_canvas"></canvas>
+    </div>
+
+    <script type="text/js-worker">
+        //定义复数计算
+        class Complex {
+
+            /**
+             * @classdesc 复数: 实现复数计算
+             * 
+             * @property { number } r - 实部
+             * @property { number } i - 虚部
+             * 
+             * @param { number } r - 实部
+             * @param { number } i - 虚部
+             * 
+             * @example
+             * let c = new Complex(1, 1);
+             */
+            constructor(r, i) {
+                //实部
+                this.r = r;
+                //虚部
+                this.i = i;
+            }
+
+            /**
+             * 复数加法
+             * @param { Complex } 操作数 
+             * @returns { Complex } this
+             */
+            add(complex) {
+                this.r += complex.r;
+                this.i += complex.i;
+                return this;
+            }
+
+            /**
+             * 复数乘法: (a+bi)(c+di)=(ac-bd)+(bc+ad)i
+             * @param { Complex } 操作数 
+             * @returns { Complex } this
+             */
+            mult(complex) {
+                let a = this.r, b = this.i, c = complex.r, d = complex.i;
+                this.r = a * c - b * d;
+                this.i = b * c + a * d;
+                return this;
+            }
+
+            /**
+             * 计算模长
+             * @returns { number } 模长
+             */
+            norm() {
+                return Math.sqrt(this.r * this.r + this.i * this.i);
+            }
+        }
+
+        /**
+         * 曼德勃罗特集: Z(n+1) = Z(n) ^ 2 + C
+         * 
+         * 判断给定参数(C)经过有限次迭代是否收敛
+         * 
+         * @param { Complex } C - 复数参数 
+         * @param { number } n - 迭代次数(int&n>0)
+         * 
+         * @returns { Array } [是否属于该集合, 迭代次数]
+         * 
+         * @example
+         * MandelbrotSet(new Complex(0, 0)) -> [true, n]
+         */
+        const MandelbrotSet = function (C, n = 500) {
+            let z = new Complex(0, 0);
+            for (let i = 0; i <= n; i++) {
+                z = z.mult(z).add(C);
+                if (z.norm() > 2) {
+                    return [false, i];
+                }
+            }
+            return [true, n]
+        }
+
+        //实数坐标系
+        class RCS {
+
+            /**
+             * @classdesc 实数坐标系: 将屏幕像素坐标系映射到实数域中进行计算
+             * 
+             * @property { number[] } co - 屏幕像素坐标系原点坐标
+             * @property { number } scale - 标度比例，一个像素对应的值(scale>0)
+             * 
+             * @param { number[] } co - 屏幕像素坐标系原点坐标
+             * @param { number } [scale=1] - 标度比例
+             * 
+             * @example
+             * let rcs = new RCS([canvas.cx, canvas.cy], 0.5);
+             */
+            constructor(co, scale = 1) {
+                this._co = co;
+                this._scale = scale;
+            }
+
+            get scale() { return this._scale; }
+            set scale(val) {
+                if (val <= 0) { throw Error(`scale(${val}) must be in (0, Inf)`); }
+                this._scale = val;
+            }
+            get co() { return [...this._co]; }
+
+            /**
+             * PCS(屏幕像素坐标系) -> RCS(当前坐标系)
+             * 
+             * @param { number } x - 屏幕像素坐标x分量
+             * @param { number } y - 屏幕像素坐标y分量
+             * @returns { number[] } 转换后的坐标
+            */
+            to(x, y) {
+                let _x = (x - this._co[0]) * this._scale;
+                let _y = (-1) * (y - this._co[1]) * this._scale;
+                return [_x, _y];
+            }
+
+            /**
+             * RCS(当前坐标系) -> PCS(屏幕像素坐标系)
+             * @param { number } x - 当前坐标系x分量
+             * @param { number } y - 当前坐标系y分量
+             * @returns { number[] } 转换后的坐标
+            */
+            from(x, y) {
+                let _x = (x / this._scale) + this._co[0];
+                let _y = ((-1) * y / this._scale) + this._co[1];
+                return [_x, _y];
+            }
+
+            /**
+             * 缩放: 对坐标系标度进行缩放  
+             * 当 "zr>0" 时，进行 "放大"，标度变小  
+             * 当 "zr<0" 时，进行 "缩小"，标度变大  
+             * 
+             * @param { number } zr - 缩放值 
+             * @returns { Object } this
+             * @example
+             * coor.zoom(2)   //放大2倍
+             * coor.zoom(-2)  //缩小2倍 
+             */
+            zoom(zr) {
+                zr > 0 ? this.scale /= Math.abs(zr) : this.scale *= Math.abs(zr)
+                return this;
+            }
+
+            /**
+             * 平移: 对屏幕像素坐标系原点坐标(co)进行平移
+             * 
+             * @param { number } x - 平移坐标x分量 
+             * @param { number } y - 平移坐标y分量 
+             * @returns { Object } this
+             * @example
+             * //向右平移100个像素
+             * coor.move(-100, 0);  
+             */
+            move(x, y) {
+                this._co[0] += x, this._co[1] += y;
+                return this;
+            }
+        }
+
+        /**
+         * 颜色填充器
+         * 
+         * 对于集合内的点，根据 color_confs.color_in 进行填充
+         * 对于集合外的点，以 color_confs.color_out 为基准，根据发散时的迭代次数(iter_n)来生成颜色值。
+         * 
+         * @params { object } color_confs - 颜色配置
+         * @params { number } [color_confs.color_in=[0, 0, 0]] - 集合内填充颜色
+         * @params { number } [color_confs.color_out=[0, 255, 255]] - 集合外填充颜色
+         * @params { object } state - MandelbrotSet函数的返回值([表示是否在集合内，为发散时的迭代次数])
+         */
+        const color_filler = function (color_confs, state) {
+            let [inSet, iter_n] = state
+            if (inSet) {
+                return color_confs.color_in;
+            } else {
+                let rate = iter_n / color_confs.n;
+                return [
+                    color_confs.color_out[0] * rate, 
+                    color_confs.color_out[1] * rate, 
+                    color_confs.color_out[2] * rate
+                ];
+            }
+        }
+
+        /** 计算和渲染曼德勃罗特集 */
+        const MandelbrotSetRenderer = function(task, confs) {
+            //构建实数坐标系: 将屏幕像素坐标系映射到 MBS 计算用的坐标系
+            let rcs = new RCS(co = confs.pco, scale = (confs.dod[1]-confs.dod[0])/confs.width/confs.zr);
+            //构建图像容器
+            let img = new ImageData(task.dx, task.dy);
+            //构建曼德勃罗特集
+            let C0 = new Complex(...confs.C0);
+            for(let y=0; y<task.dy; y++) {
+                for(let x=0; x<task.dx; x++) {
+                    //计算
+                    let _x = task.p[0] + x, _y = task.p[1] + y;
+                    let state = MandelbrotSet(new Complex(...rcs.to(_x, _y)).add(C0), confs.n);
+                    //绘制
+                    let color = color_filler(confs, state);
+                    let index = (y * confs.width + x) * 4;
+                    img.data[index] = color[0], 
+                    img.data[index+1] = color[1], 
+                    img.data[index+2] = color[2], 
+                    img.data[index+3] = 255; 
+                }
+            }
+            return img;
+        }
+
+        //执行渲染任务
+        onmessage = function(event) {
+            //任务参数 {"p": [x, y], "dx": n, "dy": n}
+            let task = event.data.task;
+            //渲染参数
+            let confs = event.data.confs;
+            //计算和渲染曼德勃罗特集
+            let img = MandelbrotSetRenderer(task, confs);
+            //回传数据
+            postMessage({"img": img, "p": task.p});
+        }
+    </script>
+
+    <!-- 绘制代码 -->
+    <script>
+        /*****************************************
+         * 操作指南
+         * 鼠标左键点击进行放大，右键进行缩小
+         * 方向键进行平移操作
+         * 按"Q"进行截图
+         *****************************************/
+
+        //渲染参数
+        const confs = {
+            //工作线程数
+            "N": 8,
+            //像素尺寸
+            "width": window.screen.width,
+            "height": window.screen.height,
+            //定义域范围
+            "dod": [-2, 2],
+            //中心点
+            "C0": [0, 0],
+            //迭代次数
+            "n": 500,
+            //缩放率
+            "zr": 1,
+            //缩放率增量
+            "dzr": 5,
+            //平移增量(像素)
+            "tpn": 300,
+            //集合内颜色参数
+            "color_in": [0, 0, 0],
+            //集合外颜色参数
+            "color_out": [0, 255, 255],
+        }
+        //屏幕中心坐标
+        confs.pco = [confs.width*(2/3), confs.height/2];
+
+        //构建工作线程
+        let blob = new Blob(Array.prototype.map.call(document.querySelectorAll("script[type=\"text\/js-worker\"]"), function (oScript) { return oScript.textContent; }),{type: "text/javascript"});
+        let workers = [];
+        for(let i=0; i<confs.N; i++) {
+            workers[i] = new Worker(window.URL.createObjectURL(blob));
+            //渲染图像
+            workers[i].onmessage = function(event) {
+                context.ctx.putImageData(event.data.img, event.data.p[0], event.data.p[1]);
+            }
+        }
+
+        //构建渲染任务
+        const MandelbrotSetRenderer = function(workers, confs) {
+            //按y轴切分渲染区域
+            let dy = parseInt(confs.height / workers.length);
+            //分配子任务到工作线程
+            for(let i=0; i<workers.length; i++) {
+                workers[i].postMessage({
+                    "task": {"p": [0, i*dy], "dx": confs.width, "dy": dy}, 
+                    "confs": confs
+                });
+            }
+        }
+
+        //构建canvas对象
+        let canvas_obj = document.getElementById("vision_canvas");
+        canvas_obj.width = confs.width, canvas_obj.height = confs.height;
+        const context = {
+            "canvas": canvas_obj,
+            //绘图上下文
+            "ctx": canvas_obj.getContext("2d"),
+            //画布尺寸
+            "width": confs.width,
+            "height": confs.height,
+            //刷新画布
+            "refresh": function (color = [0, 0, 0]) {
+                this.ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                this.ctx.fillRect(0, 0, this.width, this.height);
+            }
+        }
+        context.refresh();
+        
+        /** 
+         * 缩放
+         * 点击“鼠标左键”以点击位置为中心点进行放大后渲染，缩放倍率配装为(confs.dzr)
+         * 点击“鼠标右键”进行缩小
+        */
+        onmousedown = function(event) {
+            let scale = (confs.dod[1]-confs.dod[0])/confs.width/confs.zr;
+            confs.C0[0] += (event.offsetX - confs.pco[0]) * scale;
+            confs.C0[1] += (-1)*(event.offsetY - confs.pco[1]) * scale;
+            if(event.button == 0) { confs.zr *= confs.dzr; } 
+            if(event.button == 2) { confs.zr /= confs.dzr; }
+            MandelbrotSetRenderer(workers, confs);
+        }
+
+        /** 
+         * 平移
+         * 根据方向键进行对画面进行平移，平移像素距离为(confs.tpn)
+        */
+        onkeydown = function(event) {
+            switch(event.keyCode) {
+                case 37: { confs.pco[0] += confs.tpn; break; };
+                case 39: { confs.pco[0] -= confs.tpn; break; };
+                case 38: { confs.pco[1] += confs.tpn; break; };
+                case 40: { confs.pco[1] -= confs.tpn; break; };
+            }
+            MandelbrotSetRenderer(workers, confs);
+        }
+
+        /** 截图器 */
+        class Capturer {
+
+            /**
+             * @classdesc 截图器: 截取Canvas图像后导出
+             * 
+             * @property { CanvasContext } context - Canvas渲染上下文容器
+             * @property { string } fileTitle - 导出文件标题，默认值为 *title* 标签内容
+             * @property { number } fn - 导出文件计数器(int & fn>0)
+             * @property { get/set } [captureKey='Q'] - 截图按键值
+             * 
+             * @param { CanvasContext } context - Canvas渲染上下文容器
+             * @param { string } fileTitle - 导出文件标题
+             * 
+             * @example
+             * let captuer = new Capturer(canvas).capturing();
+             */
+            constructor(context, fileTitle) {
+                this.context = context;
+                this.fileTitle = fileTitle || document.getElementsByTagName("title")[0].innerText.replace(/\s+/g, "");
+                /** @readonly */
+                this.fn = 0;
+                this._capture_keyCode = 'Q'.charCodeAt();
+            }
+
+            /**
+             * 监听截图事件: 将截图函数绑定到按键事件上
+             */
+            capturing() {
+                let _this = this;
+                //绑定按键监听截图事件
+                window.addEventListener("keydown", function(event) {
+                    if(event.keyCode == _this._capture_keyCode) {
+                        _this.capture();
+                    }
+                }); 
+                return this;
+            }
+
+            /**
+             * 截图并导出当前canvas二进制数据
+             * 
+             * @param { string } fileName 导出文件名，默认值为 `${this.fileTitle}_${this.fn}`
+             */
+            capture(fileName) {
+                //构建文件名
+                fileName = fileName || `${this.fileTitle}_${this.fn++}`;
+                //导出canvas二进制数据
+                this.context.canvas.toBlob((blob) => {
+                    let temp_node = document.createElement('a');
+                    temp_node.style.display = 'none';
+                    temp_node.id = fileName;
+                    temp_node.href = window.URL.createObjectURL(blob);
+                    temp_node.download = `${fileName}.png`; 
+                    temp_node.click();
+                })
+            }
+        }
+        const captuer = new Capturer(context).capturing();
+
+        MandelbrotSetRenderer(workers, confs);
+    </script>
+</body>
+
+</html>

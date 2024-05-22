@@ -1,0 +1,15 @@
+{
+    "node": "9553242C-89AC-4B7E-9E7E-5D34CE55F6CD",
+    "name": "Supervisor-持久化进程部署方案",
+    "author": "Ais",
+    "date": "2024-04-02",
+    "topic": [
+        "Deploy",
+        "Solution"
+    ],
+    "tag": [
+        "python",
+        "deploy",
+        "supervisor"
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "node": "DF268D16-E5FB-BCF6-C1ED-2DEEBADC82D4",
+    "name": "Scrapy-配置化机制分析-框架配置参数解析",
+    "author": "Ais",
+    "date": "2023-09-07",
+    "topic": [
+        "Scrapy"
+    ],
+    "tag": [
+        "数据采集",
+        "scrapy",
+        "配置化机制",
+        "Settings"
+    ]
+}

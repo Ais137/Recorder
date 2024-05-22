@@ -1,0 +1,16 @@
+{
+    "node": "F6A2E530-F1E1-095B-25EF-50A9C6DF8AE3",
+    "name": "Scrapy-命令行模块架构分析",
+    "author": "Ais",
+    "date": "2023-08-22",
+    "topic": [
+        "Scrapy"
+    ],
+    "tag": [
+        "数据采集",
+        "scrapy",
+        "cmdline",
+        "命令行工具",
+        "源码分析"
+    ]
+}

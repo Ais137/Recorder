@@ -1,0 +1,15 @@
+{
+    "node": "AE2E20C1-A3FE-FDCE-F93C-3EFE9D9F5226",
+    "name": "一种基于路径表达式的json数据提取器",
+    "author": "Ais",
+    "date": "2023-09-14",
+    "topic": [
+        "Extractor"
+    ],
+    "tag": [
+        "JsonPath",
+        "数据提取",
+        "python",
+        "路径表达式"
+    ]
+}
