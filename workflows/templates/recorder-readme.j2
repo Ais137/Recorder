@@ -1,0 +1,30 @@
+# Recorder
+
+--------------------------------------------------
+## Overview · 项目概述
+
+知识技术的学习和应用是一个长期的持久化的过程，同一个问题会随着个人知识技术的积累而呈现多样的解决方案。**Recorder** 是我的个人项目，目的是通过记录个人知识技术体系的实际建立过程来探索其方法论。
+
+--------------------------------------------------
+![MandelbrotSet](./docs/index.png)
+
+--------------------------------------------------
+## Index · 目录结构
+* [articles](./articles/README.md) - 研究文档库 : 以特定主题或问题为核心的研究文档和相关代码。
+* [nodes](./nodes/README.md) - 碎片化知识库 : 记录碎片化的知识技术片段。
+* [spark](./spark/README.md) - 问题想法与灵感库 : 记录问题和初步想法，捕获灵感。
+* [spec](./spec/README.md) - 规范文档库 : 用于制定文档格式规范。
+* [workflows](./workflows/README.md) - 文档自动化工作流 : 用于自动化管理和构建文档。
+
+--------------------------------------------------
+## Top-Articles · 精选文档
+{%- for article in top_articles %}
+* [[{{ article["topic"][0] | center(10) }}] - {{ article["name"] }}]({{ article["filepath"] }}) 
+{%- endfor %}
+
+--------------------------------------------------
+## Latest-Articles · 最新文档
+{%- for article in latest_articles %}
+* [[{{ article["date"] | center(10) }}] - {{ article["name"] }}]({{ article["filepath"] }}) 
+{%- endfor %}
+

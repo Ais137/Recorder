@@ -1,0 +1,9 @@
+# Articles-Index
+{% for topic, articles in article_meta_data.items() %}
+## {{ topic }}
+> {{ articles["desc"] }}
+* Articles({{ articles["articles_count"] }})
+{%- for article in articles["articles"] %}
+* [{{ article["name"] }}]({{ article["filepath"] }}) 
+{%- endfor %}
+{% endfor %}
