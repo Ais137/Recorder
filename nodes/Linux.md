@@ -140,6 +140,47 @@ cat [log_filepath] | grep [key_string] | more
 ```
 
 --------------------------------------------------
+### 终止进程
+
+```kill -9 <PID>``` 是常用于终止进程的命令，其中 ```-9``` 参数指定强制终止进程，由于是强制终止，因此可能导致一些副作用，比如进程的资源未释放等。
+
+```kill``` 命令本质上是通过向目标进程发送信号来结束进程。使用 ```kill <PID>``` 命令会默认发送 *SIGTERM(15)* 信号，理想情况下，目标进程应该监听该信号，并在释放资源后主动退出。
+
+```kill -l``` 用于查看支持的信号列表：
+
+```sh
+(base) ubuntu@VM-16-41-ubuntu:~$ kill -l
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+ 2) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+1)  SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+2)  SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+3)  SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+4)  SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+5)  SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+6)  SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+7)  SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+8)  SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+9)  SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+10) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+11) SIGRTMAX-1  64) SIGRTMAX
+```
+
+通过 ```kill -s <SIG> <PID>``` 可以向指定进程发送指定命令。
+
+在需要批量终止进程的场景，可以用以下组合命令来实现：
+
+```sh
+ps -ef | grep <pattern> | awk '{print $2}' | xargs kill
+```
+
+其中 ```ps -ef | grep <pattern> ``` 用于从所有进程中根据 *pattern* 筛选出目标进程。
+
+```awk '{print $2}'``` 用于打印目标进程的进程PID，即 *ps* 命令输出的第二列。
+
+```xargs``` 命令着用于将管道数据转换成命令行参数(多行转多列)。
+
+
+--------------------------------------------------
 ### 统计指定目录下的文件数
 
 ```sh
