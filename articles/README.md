@@ -8,14 +8,16 @@
 
 ## Solution
 > 各类问题的解决方案集合。
-* Articles(3)
+* Articles(4)
+* [Scrapy-Redis-大规模数据分布式采集方案](./Scrapy-Redis-大规模数据分布式采集方案/Scrapy-Redis-大规模数据分布式采集方案.md)
 * [JavaScript项目的文档自动化集成与发布方案](./JavaScript项目的文档自动化集成与发布方案/JavaScript项目的文档自动化集成与发布方案.md)
 * [Supervisor-持久化进程部署方案](./Supervisor-持久化进程部署方案/Supervisor-持久化进程部署方案.md)
 * [基于requests库的组件化扩展方案](./基于requests库的组件化扩展方案/基于requests库的组件化扩展方案.md)
 
 ## Scrapy
 > *Scrapy* 框架的应用场景及相关源码实现研究。
-* Articles(6)
+* Articles(7)
+* [Scrapy-Redis-大规模数据分布式采集方案](./Scrapy-Redis-大规模数据分布式采集方案/Scrapy-Redis-大规模数据分布式采集方案.md)
 * [Scrapy-运行状态监控组件的实现原理分析](./Scrapy-运行状态监控组件的实现原理分析/Scrapy-运行状态监控组件的实现原理分析.md)
 * [Scrapy-配置化机制分析-对象加载机制研究](./Scrapy-配置化机制分析-对象加载机制研究/Scrapy-配置化机制分析-对象加载机制研究.md)
 * [Scrapy-配置化机制分析-框架配置参数解析](./Scrapy-配置化机制分析-框架配置参数解析/Scrapy-配置化机制分析-框架配置参数解析.md)

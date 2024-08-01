@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  prometheus:
+    container_name: prometheus-service
+    image: prom/prometheus
+    hostname: prometheus
+    volumes:
+      - ...:/etc/prometheus/prometheus.yml
+      - ...:/etc/prometheus/
+    # command:
+    #   - "--config.file=/prometheus.yml"
+    ports:
+        - "8081:9090"
+  grafana:
+    container_name: grafana-service
+    image: grafana/grafana
+    ports:
+      - 8082:3000
+    volumes:
+      - ...:/var/lib/grafana
+  redis_exporter:
+    image: oliver006/redis_exporter:v1.45.0
+    container_name: redis_exporter
+    ports:
+      - 8083:9121
+    command: ["-redis.addr", "redis://...:6379", "-redis.password", ""]
+    restart: always

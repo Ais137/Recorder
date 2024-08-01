@@ -1,5 +1,21 @@
 [
     {
+        "node": "0FAC7773-04E7-4BD3-9069-146426BDF2DC",
+        "name": "Scrapy-Redis-大规模数据分布式采集方案",
+        "author": "Ais",
+        "date": "2024-08-01",
+        "topic": [
+            "Scrapy",
+            "Solution"
+        ],
+        "tag": [
+            "scrapy",
+            "scrapy_redis",
+            "源码分析"
+        ],
+        "filepath": "Scrapy-Redis-大规模数据分布式采集方案/Scrapy-Redis-大规模数据分布式采集方案.md"
+    },
+    {
         "node": "A54660CD-99B5-2C55-4338-1CC8BE707203",
         "name": "Python线程池的源码实现分析与相关问题探讨",
         "author": "Ais",

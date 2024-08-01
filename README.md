@@ -18,6 +18,7 @@
 
 --------------------------------------------------
 ## Top-Articles · 精选文档
+* [[  Scrapy  ] - Scrapy-Redis-大规模数据分布式采集方案](./articles/Scrapy-Redis-大规模数据分布式采集方案/Scrapy-Redis-大规模数据分布式采集方案.md)
 * [[ Pythonic ] - Python线程池的源码实现分析与相关问题探讨](./articles/Python线程池的源码实现分析与相关问题探讨/Python线程池的源码实现分析与相关问题探讨.md)
 * [[ Pythonic ] - Python中的内省与反射机制及其应用场景](./articles/Python中的内省与反射机制及其应用场景/Python中的内省与反射机制及其应用场景.md)
 * [[ Solution ] - JavaScript项目的文档自动化集成与发布方案](./articles/JavaScript项目的文档自动化集成与发布方案/JavaScript项目的文档自动化集成与发布方案.md)
@@ -30,6 +31,7 @@
 
 --------------------------------------------------
 ## Latest-Articles · 最新文档
+* [[2024-08-01] - Scrapy-Redis-大规模数据分布式采集方案](./articles/Scrapy-Redis-大规模数据分布式采集方案/Scrapy-Redis-大规模数据分布式采集方案.md)
 * [[2024-04-18] - Python线程池的源码实现分析与相关问题探讨](./articles/Python线程池的源码实现分析与相关问题探讨/Python线程池的源码实现分析与相关问题探讨.md)
 * [[2024-04-09] - JavaScript项目的文档自动化集成与发布方案](./articles/JavaScript项目的文档自动化集成与发布方案/JavaScript项目的文档自动化集成与发布方案.md)
 * [[2024-04-02] - Supervisor-持久化进程部署方案](./articles/Supervisor-持久化进程部署方案/Supervisor-持久化进程部署方案.md)
@@ -39,4 +41,3 @@
 * [[2023-09-21] - 基于requests库的组件化扩展方案](./articles/基于requests库的组件化扩展方案/基于requests库的组件化扩展方案.md)
 * [[2023-09-18] - 一种朴素的人工滑动轨迹生成方案](./articles/一种朴素的人工滑动轨迹生成方案/一种朴素的人工滑动轨迹生成方案.md)
 * [[2023-09-14] - 一种基于路径表达式的json数据提取器](./articles/一种基于路径表达式的json数据提取器/一种基于路径表达式的json数据提取器.md)
-* [[2023-09-13] - Python中的内省与反射机制及其应用场景](./articles/Python中的内省与反射机制及其应用场景/Python中的内省与反射机制及其应用场景.md)

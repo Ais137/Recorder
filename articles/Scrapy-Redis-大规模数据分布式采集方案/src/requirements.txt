@@ -1,0 +1,2 @@
+scrapy==2.11.2
+scrapy-redis==0.9.1

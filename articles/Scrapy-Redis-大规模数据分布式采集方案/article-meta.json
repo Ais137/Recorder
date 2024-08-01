@@ -1,0 +1,15 @@
+{
+    "node": "0FAC7773-04E7-4BD3-9069-146426BDF2DC",
+    "name": "Scrapy-Redis-大规模数据分布式采集方案",
+    "author": "Ais",
+    "date": "2024-08-01",
+    "topic": [
+        "Scrapy",
+        "Solution"
+    ],
+    "tag": [
+        "scrapy",
+        "scrapy_redis",
+        "源码分析"
+    ]
+}

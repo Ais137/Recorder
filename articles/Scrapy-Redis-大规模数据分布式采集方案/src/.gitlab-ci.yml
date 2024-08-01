@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_REGISTRY_ADDR: 
+  DOCKER_REGISTRY_USERNAME: 
+  DOCKER_REGISTRY_PASSWORD: 
+  DOCKER_IMAGE_NAME: bbs
+  DOCKER_IMAGE_VERSION: v0.1.0
+  DOCKER_SERVICE_NAME: bbs_collector
+
+build_job:
+  stage: build
+  tags:
+    - deploy-runner
+  script:
+    - docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION .
+    - docker login --username=$DOCKER_REGISTRY_USERNAME $DOCKER_REGISTRY_ADDR --password $DOCKER_REGISTRY_PASSWORD
+    - docker tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION $DOCKER_REGISTRY_ADDR/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+    - docker push $DOCKER_REGISTRY_ADDR/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
+    
+deploy_job:
+  stage: deploy
+  tags:
+    - deploy-runner
+  script:
+    - docker login --username=$DOCKER_REGISTRY_USERNAME $DOCKER_REGISTRY_ADDR --password $DOCKER_REGISTRY_PASSWORD
+    - docker service rm $DOCKER_SERVICE_NAME
+    - docker service create --replicas 3 --with-registry-auth --name $DOCKER_SERVICE_NAME $DOCKER_REGISTRY_ADDR/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_VERSION
